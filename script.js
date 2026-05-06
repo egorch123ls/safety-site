@@ -1,4 +1,5 @@
 const overlayEl = document.getElementById("overlay");
+const overlayInnerEl = overlayEl?.querySelector(".overlay-inner");
 
 let closeTimer = null;
 let effectTimer = null;
@@ -96,9 +97,10 @@ function openOverlay() {
   const startedAt = Date.now();
 
   effectTimer = window.setInterval(() => {
-    overlayEl.classList.remove("shake", "flash");
-    void overlayEl.offsetWidth;
-    overlayEl.classList.add("shake", "flash");
+    const targetEl = overlayInnerEl || overlayEl;
+    targetEl.classList.remove("shake", "flash");
+    void targetEl.offsetWidth;
+    targetEl.classList.add("shake", "flash");
 
     if (Date.now() - startedAt >= EFFECT_MS) {
       closeOverlay();
