@@ -4,6 +4,7 @@ let closeTimer = null;
 let effectTimer = null;
 let isRunning = false;
 let scrollLockY = 0;
+let tick = 0;
 
 const START_DELAY_MS = 2000; // задержка перед стартом
 const EFFECT_MS = 3000;      // длительность эффекта
@@ -14,27 +15,18 @@ function lockScroll() {
 
   scrollLockY = window.scrollY || 0;
 
-  // Надёжная блокировка прокрутки + сохранение позиции
-  document.body.style.position = "fixed";
-  document.body.style.top = `-${scrollLockY}px`;
-  document.body.style.left = "0";
-  document.body.style.right = "0";
-  document.body.style.width = "100%";
-  document.body.style.overflow = "hidden";
-
+  // Лёгкая блокировка прокрутки (без position: fixed — на мобилках меньше багов)
   document.documentElement.style.overflow = "hidden";
+  document.body.style.overflow = "hidden";
+  document.body.style.touchAction = "none";
 }
 
 function unlockScroll() {
   if (document.body.dataset.scrollLocked !== "1") return;
   document.body.dataset.scrollLocked = "0";
 
-  document.body.style.position = "";
-  document.body.style.top = "";
-  document.body.style.left = "";
-  document.body.style.right = "";
-  document.body.style.width = "";
   document.body.style.overflow = "";
+  document.body.style.touchAction = "";
 
   document.documentElement.style.overflow = "";
 
@@ -73,8 +65,8 @@ function closeOverlay() {
   overlayEl?.classList.remove("is-open");
   overlayEl?.setAttribute("aria-hidden", "true");
 
-  document.documentElement.classList.remove("shake");
-  document.body.classList.remove("flash");
+  document.documentElement.classList.remove("shake-a", "shake-b");
+  document.body.classList.remove("flash-a", "flash-b");
 
   unlockScroll();
 
@@ -99,11 +91,13 @@ function openOverlay() {
   const startedAt = Date.now();
 
   effectTimer = window.setInterval(() => {
-    document.documentElement.classList.remove("shake");
-    document.body.classList.remove("flash");
-    void document.documentElement.offsetWidth;
-    document.documentElement.classList.add("shake");
-    document.body.classList.add("flash");
+    tick = (tick + 1) & 1;
+
+    // Перезапуск “удара” без forced reflow (меньше лагов на мобилках)
+    document.documentElement.classList.toggle("shake-a", tick === 0);
+    document.documentElement.classList.toggle("shake-b", tick === 1);
+    document.body.classList.toggle("flash-a", tick === 0);
+    document.body.classList.toggle("flash-b", tick === 1);
 
     if (Date.now() - startedAt >= EFFECT_MS) {
       closeOverlay();
