@@ -96,11 +96,9 @@ function openOverlay() {
   const startedAt = Date.now();
 
   effectTimer = window.setInterval(() => {
-    document.documentElement.classList.remove("shake");
-    document.body.classList.remove("flash");
-    void document.documentElement.offsetWidth;
-    document.documentElement.classList.add("shake");
-    document.body.classList.add("flash");
+    overlayEl.classList.remove("shake", "flash");
+    void overlayEl.offsetWidth;
+    overlayEl.classList.add("shake", "flash");
 
     if (Date.now() - startedAt >= EFFECT_MS) {
       closeOverlay();
