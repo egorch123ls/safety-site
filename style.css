@@ -86,6 +86,7 @@ body {
 }
 
 #app.is-shaking {
+  /* legacy (не используется): оставлено для совместимости */
   animation: screenShake 260ms steps(2, end);
   transform-origin: 50% 50%;
   will-change: transform;
@@ -371,11 +372,20 @@ h1 {
 
 /* “Mild screamer”: quick shake + bright flash */
 .shake {
-  animation: shake 260ms steps(2, end);
+  /* ВАЖНО: класс `shake` навешивается на <html>.
+     Нельзя трясти сам <html> (transform ломает fixed-оверлей при скролле),
+     поэтому трясём только контент (#app). */
+  animation: none;
 }
 
 .flash {
   animation: flash 160ms steps(1, end);
+}
+
+html.shake #app {
+  animation: screenShake 260ms steps(2, end);
+  transform-origin: 50% 50%;
+  will-change: transform;
 }
 
 @keyframes shake {
