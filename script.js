@@ -1,6 +1,4 @@
 const overlayEl = document.getElementById("overlay");
-const overlayInnerEl = overlayEl?.querySelector(".overlay-inner");
-const appEl = document.getElementById("app");
 
 let closeTimer = null;
 let effectTimer = null;
@@ -77,9 +75,6 @@ function closeOverlay() {
 
   document.documentElement.classList.remove("shake");
   document.body.classList.remove("flash");
-  appEl?.classList.remove("is-shaking");
-
-  appEl?.classList.remove("is-shaking");
 
   unlockScroll();
 
@@ -104,11 +99,6 @@ function openOverlay() {
   const startedAt = Date.now();
 
   effectTimer = window.setInterval(() => {
-    const targetEl = overlayInnerEl || overlayEl;
-    targetEl.classList.remove("shake", "flash");
-    void targetEl.offsetWidth;
-    targetEl.classList.add("shake", "flash");
-
     document.documentElement.classList.remove("shake");
     document.body.classList.remove("flash");
     void document.documentElement.offsetWidth;
