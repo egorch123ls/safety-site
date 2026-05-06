@@ -75,6 +75,10 @@ function closeOverlay() {
   overlayEl?.classList.remove("is-open");
   overlayEl?.setAttribute("aria-hidden", "true");
 
+  document.documentElement.classList.remove("shake");
+  document.body.classList.remove("flash");
+  appEl?.classList.remove("is-shaking");
+
   appEl?.classList.remove("is-shaking");
 
   unlockScroll();
@@ -105,11 +109,11 @@ function openOverlay() {
     void targetEl.offsetWidth;
     targetEl.classList.add("shake", "flash");
 
-    if (appEl) {
-      appEl.classList.remove("is-shaking");
-      void appEl.offsetWidth;
-      appEl.classList.add("is-shaking");
-    }
+    document.documentElement.classList.remove("shake");
+    document.body.classList.remove("flash");
+    void document.documentElement.offsetWidth;
+    document.documentElement.classList.add("shake");
+    document.body.classList.add("flash");
 
     if (Date.now() - startedAt >= EFFECT_MS) {
       closeOverlay();
